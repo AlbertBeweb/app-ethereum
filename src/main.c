@@ -446,6 +446,15 @@ void handleApdu(unsigned int *flags, unsigned int *tx) {
                                                        tx);
                     break;
 
+                case INS_SET_EXTERNAL_PLUGIN:
+                    handleSetExternalPlugin(G_io_apdu_buffer[OFFSET_P1],
+                                            G_io_apdu_buffer[OFFSET_P2],
+                                            G_io_apdu_buffer + OFFSET_CDATA,
+                                            G_io_apdu_buffer[OFFSET_LC],
+                                            flags,
+                                            tx);
+                    break;
+
                 case INS_SIGN:
                     handleSign(G_io_apdu_buffer[OFFSET_P1],
                                G_io_apdu_buffer[OFFSET_P2],
@@ -846,12 +855,10 @@ __attribute__((section(".boot"))) int main(int arg0) {
         default:
             if (chain_config == NULL)
                 // Called as standalone eth library
-                library_main(command, ((unsigned int *) arg0)[3]);  // called as bitcoin library
+                library_main(command, ((unsigned int *) arg0)[3]);
             else
                 // Called as a library from an altcoin
-                library_main_with_config(chain_config,
-                                         command,
-                                         ((unsigned int *) arg0)[3]);  // called as coin library
+                library_main_with_config(chain_config, command, ((unsigned int *) arg0)[3]);
             break;
     }
 #endif
